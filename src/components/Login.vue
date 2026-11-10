@@ -24,7 +24,7 @@
 
     <main class="panel">
       <div class="auth">
-        <h1>Welcome back</h1>
+        <h1>Welcome</h1>
         <p class="sub">
           Log in to check in to events or monitor attendance.
         </p>
