@@ -702,7 +702,7 @@
         </h3>
 
         <div class="qr-valid">
-          ✓ QR Code Valid for 24 Hours
+          ✓ QR Code Valid for {{ QR_VALID_DAYS }} {{ QR_VALID_DAYS === 1 ? 'Day' : 'Days' }}
         </div>
 
         <img
@@ -825,6 +825,14 @@ const newEvent = ref({
   time: '',
   location: ''
 })
+
+/* =========================
+   QR SETTINGS
+========================= */
+
+// How many days a generated QR code stays valid.
+// Change this number (7 = one week, 14 = two weeks, 30 = a month).
+const QR_VALID_DAYS = 7
 
 /* =========================
    LOAD DATA
@@ -1109,7 +1117,7 @@ async function generateQR(event) {
 
   const expiresAt =
     createdAt +
-    (24 * 60 * 60 * 1000)
+    (QR_VALID_DAYS * 24 * 60 * 60 * 1000)
 
   event.qrCreatedAt = createdAt
 
