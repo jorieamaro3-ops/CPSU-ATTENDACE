@@ -265,7 +265,7 @@
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import jsQR from 'jsqr'
 import { matchFaces, loadFaceModels } from '../utils/faceMatch'
-import { DEMO_MODE } from '../utils/demoData'
+import { DEMO_MODE } from '../utils/demodata'
 
 defineEmits(['logout'])
 
