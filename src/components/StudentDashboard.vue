@@ -164,6 +164,20 @@
             >
           </label>
 
+          <div v-if="isDemoUser" class="demo-skip">
+            <button
+              class="primary"
+              @click="demoSkipQR"
+            >
+              Skip QR scan (demo only)
+            </button>
+
+            <small>
+              This button appears only for the demo account, so the face
+              verification can be tried without a QR code.
+            </small>
+          </div>
+
           <button
             class="cancel"
             @click="closeCheckIn"
@@ -251,7 +265,7 @@
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import jsQR from 'jsqr'
 import { matchFaces, loadFaceModels } from '../utils/faceMatch'
-import { DEMO_MODE } from '../utils/demodata'
+import { DEMO_MODE } from '../utils/demoData'
 
 defineEmits(['logout'])
 
@@ -635,6 +649,26 @@ async function handleQRResult(raw) {
   step.value = 'face'
 
   loadFaceModels().catch(() => {}) // warm up while camera opens
+
+  await nextTick()
+
+  startCamera('user')
+}
+
+/* Demo only: only the demo account may continue without scanning a QR code */
+const isDemoUser = computed(
+  () => DEMO_MODE && user.value?.studentId === 'DEMO-0001'
+)
+
+async function demoSkipQR() {
+  if (!isDemoUser.value) return
+
+  scanError.value = ''
+  stopCamera()
+
+  step.value = 'face'
+
+  loadFaceModels().catch(() => {})
 
   await nextTick()
 
@@ -1415,6 +1449,22 @@ main {
 
 .demo-reset:hover {
   background: rgba(255, 255, 255, .15);
+}
+
+.demo-skip {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1.5px dashed var(--line);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.demo-skip small {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
 }
 </style>
 
