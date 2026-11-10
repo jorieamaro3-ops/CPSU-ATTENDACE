@@ -243,6 +243,7 @@
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import jsQR from 'jsqr'
 import { matchFaces, loadFaceModels } from '../utils/faceMatch'
+import { DEMO_MODE } from '../utils/demodata'
 
 defineEmits(['logout'])
 
@@ -563,6 +564,16 @@ function validateQR(raw) {
 
   if (payload.eventId !== selectedEvent.value.id) {
     return 'This QR code is for a different event.'
+  }
+
+  // Demo version: devices don't share data, so check the QR's own expiry
+  // instead of comparing it with this device's saved copy of the event.
+  if (DEMO_MODE) {
+    if (!payload.expiresAt || Date.now() >= payload.expiresAt) {
+      return 'This QR code has expired.'
+    }
+
+    return ''
   }
 
   loadEvents()

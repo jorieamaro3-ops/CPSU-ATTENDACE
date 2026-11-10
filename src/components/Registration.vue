@@ -690,6 +690,11 @@ async function register() {
   transform: scaleX(-1);
 }
 
+/* show the captured photo mirrored, like the live preview */
+.face-box img {
+  transform: scaleX(-1);
+}
+
 .face-empty {
   font-size: 13px;
   color: rgba(255, 255, 255, .6);

@@ -145,6 +145,7 @@
 
 <script setup>
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
+import { DEMO_MODE as DEMO } from '../utils/demodata'
 
 const emit = defineEmits(['login', 'register'])
 
@@ -161,8 +162,6 @@ const LOCK_KEY = 'loginLockUntil'
 const ADMIN_EMAIL = 'admin@cpsu.edu.ph'
 const ADMIN_PASSWORD = 'admin123'
 
-// Set to false to hide the demo buttons (do this before real use)
-const DEMO = true
 const DEMO_EMAIL = 'demo.student@cpsu.edu.ph'
 
 /* =========================
@@ -756,6 +755,11 @@ function startDemoStudent() {
 }
 
 .face-box video {
+  transform: scaleX(-1);
+}
+
+/* show the captured photo mirrored, like the live preview */
+.face-box img {
   transform: scaleX(-1);
 }
 

@@ -33,16 +33,38 @@ import Login from './components/Login.vue'
 import Registration from './components/Registration.vue'
 import StudentDashboard from './components/StudentDashboard.vue'
 import AdminDashboard from './components/AdminDashboard.vue'
+import { seedDemoData } from './utils/demodata.js'
 
-const page = ref('login')
+seedDemoData()
+
+const SESSION_KEY = 'session'
+
+// Restore the session after a page refresh
+function initialPage() {
+  const saved = localStorage.getItem(SESSION_KEY)
+
+  if (saved === 'admin') {
+    return 'admin'
+  }
+
+  if (saved === 'student' && localStorage.getItem('user')) {
+    return 'student'
+  }
+
+  return 'login'
+}
+
+const page = ref(initialPage())
 
 function loginSuccess(role) {
+  localStorage.setItem(SESSION_KEY, role)
   page.value = role
 }
 
 function logout() {
-  // Clear the current student session so the next user starts clean
+  // Clear the current session so the next user starts clean
   localStorage.removeItem('user')
+  localStorage.removeItem(SESSION_KEY)
 
   page.value = 'login'
 }
