@@ -1,5 +1,5 @@
 // Single switch for the showcase / demo version of the app.
-// true  = sample data is preloaded and demo buttons are shown
+// true  = sample data is preloaded and students get a "Skip QR scan" button
 // false = normal behaviour (set this before real use)
 export const DEMO_MODE = true
 
@@ -73,4 +73,19 @@ export function seedDemoData() {
   } catch {
     // storage unavailable: the app still works, just without sample data
   }
+}
+
+// Wipes everything saved in this browser and loads the sample data again.
+export function resetDemoData() {
+  ;[
+    'events',
+    'attendance',
+    'students',
+    'users',
+    'user',
+    'session',
+    'demoSeeded'
+  ].forEach(key => localStorage.removeItem(key))
+
+  seedDemoData()
 }

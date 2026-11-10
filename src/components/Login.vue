@@ -95,6 +95,9 @@
               Try as Admin
             </button>
           </div>
+          <button type="button" class="link reset-link" @click="resetDemo">
+            Reset demo data
+          </button>
         </div>
       </div>
     </main>
@@ -145,7 +148,7 @@
 
 <script setup>
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
-import { DEMO_MODE as DEMO } from '../utils/demodata'
+import { DEMO_MODE as DEMO, resetDemoData } from '../utils/demodata'
 
 const emit = defineEmits(['login', 'register'])
 
@@ -321,6 +324,15 @@ const facePhoto = ref('')
 const faceError = ref('')
 let faceStream = null
 
+function resetDemo() {
+  if (!confirm('Reset the demo? This clears all events, accounts and check-ins on this device.')) {
+    return
+  }
+
+  resetDemoData()
+  alert('Demo data was reset.')
+}
+
 function demoAdmin() {
   emit('login', 'admin')
 }
@@ -372,13 +384,13 @@ function captureDemoFace() {
     return
   }
 
+  // Keep the camera's real proportions (phones are tall), so the face isn't squashed
+  const scale = Math.min(1, 640 / Math.max(el.videoWidth, el.videoHeight))
   const canvas = document.createElement('canvas')
-  canvas.width = 480
-  canvas.height = 360
+  canvas.width = Math.round(el.videoWidth * scale)
+  canvas.height = Math.round(el.videoHeight * scale)
 
-  canvas
-    .getContext('2d')
-    .drawImage(el, 0, 0, canvas.width, canvas.height)
+  canvas.getContext('2d').drawImage(el, 0, 0, canvas.width, canvas.height)
 
   facePhoto.value = canvas.toDataURL('image/jpeg', 0.85)
   stopFaceCamera()
@@ -809,6 +821,14 @@ function startDemoStudent() {
 
 .demo-row .btn-ghost {
   margin-top: 0;
+}
+
+.reset-link {
+  display: block;
+  margin: 14px auto 0;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .overlay {

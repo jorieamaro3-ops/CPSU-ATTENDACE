@@ -238,14 +238,14 @@ function captureFace() {
     return
   }
 
-  // Small JPEG so it fits comfortably in localStorage
+  // Keep the camera's real proportions (phones are tall), so the face isn't squashed.
+  // Max 640px keeps the JPEG small enough for localStorage.
+  const scale = Math.min(1, 640 / Math.max(el.videoWidth, el.videoHeight))
   const canvas = document.createElement('canvas')
-  canvas.width = 480
-  canvas.height = 360
+  canvas.width = Math.round(el.videoWidth * scale)
+  canvas.height = Math.round(el.videoHeight * scale)
 
-  canvas
-    .getContext('2d')
-    .drawImage(el, 0, 0, canvas.width, canvas.height)
+  canvas.getContext('2d').drawImage(el, 0, 0, canvas.width, canvas.height)
 
   faceImage.value = canvas.toDataURL('image/jpeg', 0.85)
 

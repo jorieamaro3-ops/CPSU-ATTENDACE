@@ -43,6 +43,14 @@
         <div v-if="events.length" class="progress">
           <span :style="{ width: progress + '%' }"></span>
         </div>
+
+        <button
+          v-if="DEMO_MODE && checkedInCount"
+          class="demo-reset"
+          @click="resetMyCheckIns"
+        >
+          Demo: reset my check-ins
+        </button>
       </section>
 
       <h2 class="section-title">Events</h2>
@@ -287,6 +295,17 @@ function loadAttendance() {
   attendance.value = JSON.parse(
     localStorage.getItem('attendance') || '[]'
   )
+}
+
+/* Demo only: removes this student's check-ins so the flow can be tried again */
+function resetMyCheckIns() {
+  loadAttendance()
+
+  attendance.value = attendance.value.filter(
+    record => record.email !== user.value?.email
+  )
+
+  localStorage.setItem('attendance', JSON.stringify(attendance.value))
 }
 
 function hasCheckedIn(event) {
@@ -652,9 +671,10 @@ async function verifyFace() {
   frame.height = video.videoHeight
   frame.getContext('2d').drawImage(video, 0, 0)
 
+  const thumbScale = Math.min(1, 320 / Math.max(video.videoWidth, video.videoHeight))
   const thumb = document.createElement('canvas')
-  thumb.width = 240
-  thumb.height = 180
+  thumb.width = Math.round(video.videoWidth * thumbScale)
+  thumb.height = Math.round(video.videoHeight * thumbScale)
   thumb.getContext('2d').drawImage(video, 0, 0, thumb.width, thumb.height)
   const livePhoto = thumb.toDataURL('image/jpeg', 0.6)
 
@@ -1378,6 +1398,23 @@ main {
   main {
     max-width: 960px;
   }
+}
+
+.demo-reset {
+  margin-top: 14px;
+  padding: 8px 14px;
+  border: 1.5px solid rgba(255, 255, 255, .5);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.demo-reset:hover {
+  background: rgba(255, 255, 255, .15);
 }
 </style>
 
